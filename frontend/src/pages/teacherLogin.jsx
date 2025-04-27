@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adminLogin } from '../apihandle/api';
+import { adminLogin, teacherLogin } from '../apihandle/api';
 import { toast} from 'react-toastify';
 
 export default function AdminLogin() {
@@ -22,24 +22,26 @@ export default function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!credentials.email || !credentials.password) {
-      toast.error('Both email and password are required');
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const response = await adminLogin(credentials);
-       if (response.status == 200) {
-         toast.success('you are now logged In!');
-         localStorage.setItem("access", response.data.access);
-         localStorage.setItem('refresh', response.data.refresh);
-         navigate('/dasboard');
-       }
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    // if (!credentials.email || !credentials.password) {
+    //   toast.error('Both email and password are required');
+    //   return;
+    // }
+    // setIsLoading(true);
+    // try {
+    //   const response = await adminLogin(credentials);
+    //    if (response.status == 200) {
+    //      toast.success('you are now logged In!');
+    //      localStorage.setItem("access", response.data.access);
+    //      localStorage.setItem('refresh', response.data.refresh);
+    //      navigate('/dasboard');
+    //    }
+    // } catch (error) {
+    //   console.error('Login error:', error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
+
+    teacherLogin()
   };
 
   return (
