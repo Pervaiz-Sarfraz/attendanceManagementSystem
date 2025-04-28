@@ -1,1 +1,1 @@
-This is full stack project.
+A web-based application for managing teacher authentication, student attendance, and class assignments. The backend is built with Django and Django REST Framework, using JWT for authentication, while the frontend is developed with React and Axios for API interactions.

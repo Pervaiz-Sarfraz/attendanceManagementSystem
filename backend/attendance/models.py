@@ -59,7 +59,6 @@ class Class(models.Model):
     schedule = models.CharField(max_length=100)    
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(Admin, on_delete=models.CASCADE, related_name="classes")
-
     def __str__(self):
         return self.name
 

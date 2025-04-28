@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Admin, Teacher,Class,Assignment,Student,Attendance
+from .models import Admin, Teacher, Class, Assignment, Student, Attendance
+
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
@@ -14,21 +15,11 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = Teacher
         fields = ['id', 'name', 'email']
 
-from rest_framework import serializers
-from .models import Class
-
 class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = ['id', 'name', 'code', 'schedule', 'created_at', 'created_by']
         read_only_fields = ['created_at', 'created_by']
-
-
-
-class ClassSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Class
-        fields = ['id', 'name', 'code', 'schedule']
 
 class AssignmentSerializer(serializers.ModelSerializer):
     teacher = serializers.PrimaryKeyRelatedField(queryset=Teacher.objects.all())
@@ -48,29 +39,39 @@ class AssignmentSerializer(serializers.ModelSerializer):
         assignment = Assignment.objects.create(
             teacher=teacher,
             class_assign=class_assign,
-            created_by=self.context['request'].user  
+            created_by=self.context['request'].user
         )
         return assignment
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        return representation
-    
-class TeacherLoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Teacher
-        fields = ['email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+class TeacherLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(write_only=True, required=False)
+
+    def validate(self, data):
+        email = data.get('email')
+        teacher = Teacher.objects.filter(email=email).first()
+        if not teacher:
+            raise serializers.ValidationError({"email": "Teacher not found"})
+        data['teacher'] = teacher
+        return data
 
 class TeacherSetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True, required=True)
     confirm_password = serializers.CharField(write_only=True, required=True)
 
     def validate(self, data):
+        email = data.get('email')
+        teacher = Teacher.objects.filter(email=email).first()
+        if not teacher:
+            raise serializers.ValidationError({"email": "Teacher not found"})
+        if not teacher.is_first_login:
+            raise serializers.ValidationError({"email": "Password already set"})
         if data['password'] != data['confirm_password']:
-            raise serializers.ValidationError("Passwords don't match")
+            raise serializers.ValidationError({"password": "Passwords don't match"})
+        data['teacher'] = teacher
         return data
-    
+
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
