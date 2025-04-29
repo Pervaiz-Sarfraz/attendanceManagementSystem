@@ -28,7 +28,7 @@ export default function App() {
       />
       <Routes>
         <Route path="/admin" element={<Admin />} />
-        <Route path="/teacher" element={<TeacherLogin />} />
+        <Route path="/" element={<TeacherLogin />} />
         <Route path="/dasboard" element={<Dasboard />} />
         <Route
   path="/teacher/Dashboard"

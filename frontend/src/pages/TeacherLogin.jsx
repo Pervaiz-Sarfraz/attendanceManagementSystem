@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { teacherSetPassword, teacherLogin } from '../apihandle/teacherapi';
+import { teacherSetPassword, teacherLogin } from '../apihandle/api';
 import { toast } from 'react-toastify';
 
 export default function TeacherLogin() {
